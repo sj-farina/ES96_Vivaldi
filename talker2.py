@@ -23,11 +23,11 @@ def kp(event):
 		talker(11)
 	else :
 		talker(0)
-def kr(event) :
-	talker(0)
+#def kr(event) :
+#	talker(0)
 
 main.bind_all('<KeyPress>', kp)
-main.bind_all('<KeyRelease>', kr)
+#main.bind_all('<KeyRelease>', kr)
 
 main.mainloop()
 
