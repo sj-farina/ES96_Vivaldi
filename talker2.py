@@ -1,7 +1,6 @@
 import rospy
 from std_msgs.msg import Int64
 from Tkinter import *
-import RPi.GPIO as GPIO
 import time
 
 main = Tk()
@@ -30,7 +29,4 @@ main.bind_all('<KeyPress>', kp)
 #main.bind_all('<KeyRelease>', kr)
 
 main.mainloop()
-
-GPIO.cleanup()
-
 
