@@ -16,12 +16,14 @@ def talker(data):
     rate.sleep()
 
 def kp(event):
-	if event.keysym == 'Right' :
-		talker(18)
-	elif event.keysym =='Left' :
-		talker(17)
-	else :
-		talker(0)
+  if event.keysym == 'Right' :
+    talker(13)
+  elif event.keysym =='Left' :
+    talker(11)
+  else :
+    print (event.keysym)
+    #talker(0)
+
 #def kr(event) :
 #	talker(0)
 
