@@ -16,7 +16,7 @@ while True:
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect('pi@192.168.1.2')
+        ssh.connect('192.168.1.2', username='pi', password='raspberry')
         print "Connected to %s" % host
         break
     except paramiko.AuthenticationException:
@@ -33,7 +33,7 @@ while True:
         sys.exit(1)
 
 # Send the command (non-blocking)
-stdin, stdout, stderr = ssh.exec_command("my_long_command --arg 1 --arg 2")
+stdin, stdout, stderr = ssh.exec_command("echo foo \n cd \n roscore & \n echo baaa \n cd  \n cd scripts \n sudo su \n echo feeee \n raspberry \n python listener2.py \n echo mehhhhh \n")
 
 # Wait for the command to terminate
 while not stdout.channel.exit_status_ready():
