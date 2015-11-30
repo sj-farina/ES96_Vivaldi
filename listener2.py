@@ -2,7 +2,7 @@ import pigpio
 import rospy
 from std_msgs.msg import Int64
 from Tkinter import *
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import time
 
 
@@ -10,11 +10,11 @@ pi1 = pigpio.pi()
 
 
 def callback(data):
-	# GPIO expects an int, which is notthe same as Int64, 
+	# GPIO expects an int, which is notthe same as Int64,
 	# still need to figure out how to convert betweent he two >_<
 	# This is a super messy workaround...
 	stuff = str(data)
-	tag, value = str.split(stuff) 
+	tag, value = str.split(stuff)
 	pin = int(value)
 	if pin == 0:
 		print ('off')
@@ -32,7 +32,7 @@ def off():
 	#GPIO.setup(13, GPIO.OUT)
 	#GPIO.output(13,GPIO.LOW)
 	#GPIO.output(11,GPIO.LOW)
-	
+
 def on(pin):
 	pi1.write(pin, 1)
 	#GPIO.setmode(GPIO.BOARD)
