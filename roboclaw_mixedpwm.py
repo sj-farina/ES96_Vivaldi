@@ -10,9 +10,9 @@ address = 0x80
 
 roboclaw.ForwardMixed(address, 0)
 roboclaw.TurnRightMixed(address, 0)
-#response = raw_input("Give me a number: ")
-while(1):
-	response = raw_input("Give me a number: ")
+response = raw_input("Give me a number: ")
+#while(1):
+#	response = raw_input("Give me a number: ")
 if response == '1':
 	roboclaw.ForwardMixed(address, 64)
         print '1'
