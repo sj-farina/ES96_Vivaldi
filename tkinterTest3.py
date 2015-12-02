@@ -6,6 +6,8 @@
 from Tkinter import *
 import ttk
 
+import rospy
+from std_msgs.msg import Int64
 import time
 import subprocess
 import paramiko
@@ -44,10 +46,29 @@ def run_evt():
     widget_track['run'].config(text="Running", state="disabled", command=None)
 
 def run():
-  time.sleep(5)     # todo: temporary for test
-  return
-  stdin, stdout, stderr = ssh.exec_command('python ES96_Vivaldi/talker2.py')
+  root.bind_all('<KeyPress>', kp)
+  print ('foooo')
+  #time.sleep(5)     # todo: temporary for test
+  #return
+  #stdin, stdout, stderr = ssh.exec_command('python ES96_Vivaldi/talker2.py')
 
+
+
+def talker(data):
+    pub = rospy.Publisher('chatter', Int64, queue_size=10)
+    rospy.init_node('talker', anonymous=True)
+    rate = rospy.Rate(10) # 10hz
+    rospy.loginfo(data)
+    pub.publish(data)
+    rate.sleep()
+
+def kp(event):
+	if event.keysym == 'Right' :
+		talker(18)
+	elif event.keysym =='Left' :
+		talker(17)
+	else :
+		talker(0)
 
 root = Tk()
 
