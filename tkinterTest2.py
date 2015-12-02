@@ -23,9 +23,11 @@ def connect():
   ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
   ssh.connect('192.168.1.2', username='pi', password='raspberry')
   stdin, stdout, stderr = ssh.exec_command('cd')
+  stdin, stdout, stderr = ssh.exec_command('sudo pigpiod')
+  stdin, stdout, stderr = ssh.exec_command('raspberry \n')
   stdin, stdout, stderr = ssh.exec_command('roscore &')
   time.sleep(20)
-  stdin, stdout, stderr = ssh.exec_command('\n')
+  stdin, stdout, stderr = ssh.exec_command('\n fooooo')
   stdin, stdout, stderr = ssh.exec_command('cd scripts')
   stdin, stdout, stderr = ssh.exec_command('python /home/pi/scripts/listener2.py')
   return
