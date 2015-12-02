@@ -2,6 +2,7 @@ import random
 import serial
 import struct
 import time
+from serial import Serial
 
 _trystimeout = 3
 
@@ -1033,6 +1034,7 @@ def ReadPWMMode(address):
 
 def Open(comport, rate):
 	global port
-	port = serial.Serial(comport, baudrate=rate, timeout=0.1, interCharTimeout=0.01)
+	#port = serial.Serial(comport, baudrate=rate, timeout=0.1, interCharTimeout=0.01)
+	port = Serial("/dev/ttyAMA0", 9600, timeout=0.1, interCharTimeout=0.01)
 	return
 
