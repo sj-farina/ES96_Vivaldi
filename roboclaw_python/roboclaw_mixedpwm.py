@@ -1,35 +1,28 @@
 import time
 import roboclaw
+from serial import Serial
 
 #Windows comport name
 #roboclaw.Open("COM3",115200)
 #Linux comport name
-roboclaw.Open("/dev/tty0",115200)
+#roboclaw.Open("/dev/ttyAMA0",9600)
+serialPort = Serial("/dev/ttyAMA0", 9600, timeout=2)
 
 address = 0x80
 
 roboclaw.ForwardMixed(address, 0)
 roboclaw.TurnRightMixed(address, 0)
-response = raw_input("Give me a number: ")
-#while(1):
-#	response = raw_input("Give me a number: ")
-if response == '1':
-	roboclaw.ForwardMixed(address, 64)
-        print '1'
+
+while(1):
+	roboclaw.ForwardM1(address, 64)
 	time.sleep(2)
-elif response == '2':
-	roboclaw.BackwardMixed(address, 64)
-        print '2'
+        print 'foo'
+	roboclaw.BackwardM1(address, 64)
 	time.sleep(2)
-elif response == '3':
+	print 'foo2'
 	roboclaw.TurnRightMixed(address, 64)
-        print '3'
 	time.sleep(2)
-else:
-	print 'Only input 1, 2, or 3!!!'
-
-
-	'''roboclaw.TurnLeftMixed(address, 64)
+	roboclaw.TurnLeftMixed(address, 64)
 	time.sleep(2)
 	roboclaw.ForwardMixed(address, 0)
 	roboclaw.TurnRightMixed(address, 64)
@@ -37,4 +30,4 @@ else:
 	roboclaw.TurnLeftMixed(address, 64)
 	time.sleep(2)
 	roboclaw.TurnRightMixed(address, 0)
-	time.sleep(2)'''
+	time.sleep(2)

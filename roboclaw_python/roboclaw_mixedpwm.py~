@@ -1,10 +1,12 @@
 import time
 import roboclaw
+from serial import Serial
 
 #Windows comport name
 #roboclaw.Open("COM3",115200)
 #Linux comport name
-roboclaw.Open("/dev/tty0",115200)
+roboclaw.Open("/dev/ttyAMA0",9600)
+#serialPort = Serial("/dev/ttyAMA0", 9600, timeout=2)
 
 address = 0x80
 
@@ -12,10 +14,12 @@ roboclaw.ForwardMixed(address, 0)
 roboclaw.TurnRightMixed(address, 0)
 
 while(1):
-	roboclaw.ForwardMixed(address, 64)
+	roboclaw.ForwardM1(address, 64)
 	time.sleep(2)
-	roboclaw.BackwardMixed(address, 64)
+        print 'foo'
+	roboclaw.BackwardM1(address, 64)
 	time.sleep(2)
+	print 'foo2'
 	roboclaw.TurnRightMixed(address, 64)
 	time.sleep(2)
 	roboclaw.TurnLeftMixed(address, 64)
