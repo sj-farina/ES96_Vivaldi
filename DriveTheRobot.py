@@ -18,31 +18,31 @@ B = 2
 L = 3
 R = 4
 
-#setup
-'''next_stateR = 0
-next_stateL = 0
-cur_stateR = 0
-cur_stateL = 0
-direction = 0'''
 
-serialPort = Serial('/dev/ttyAMA0', 9600, timeout = 2)
-
+#serialPort = Serial('/dev/ttyAMA0', 9600, timeout = 2)
+cur_stateR = M1S
+cur_stateL = M2S
+next_stateR = M1S
+next_state = M2S
 
 main = Tk()
 
 
-
 def kp(event):
-  if event.keysym == 'Up' :
-    direction_set(F)
-  elif event.keysym =='Down' :
-    direction_set(B)
-  elif event.keysym =='Left' :
-    direction_set(L)
-  elif event.keysym =='Right' :
-    direction_set(R)
-  else :
-    direction_set(S)
+	if event.keysym == 'Up' :
+		direction_set(F)
+	elif event.keysym =='Down' :
+		direction_set(B)
+	elif event.keysym =='Left' :
+		direction_set(L)
+	elif event.keysym =='Right' :
+		direction_set(R)
+	else :
+		save_cur_state(M2S, M1S)
+		direction_set(S)
+
+
+
 
 
 def direction_set(direction):
@@ -64,45 +64,71 @@ def direction_set(direction):
 	else:
 		next_stateR = M1S
 		next_stateL = M2S
-	update()
+	update(next_stateR, next_state)
 
-def update():
-	global cur_stateR
-	global cur_stateL
+def update(next_stateR, next_stateL):
+	cur_stateR, cur_stateL = get_cur_state()
 	if (cur_stateR != next_stateR):
 		#first set to 64
 		cur_stateR = M1S
-		cur_stateL = M2S
-		refresh()
+		refresh(cur_stateL, cur_stateR)
 		time.sleep(1)
 	  # then itterate to the desired stat
-		if cur_stateR == M1F:
+		if next_stateR == M1F:
 			for x in range (M1S, M1F):
 				cur_stateR = x
-				refresh()
-		elif cur_stateR == M1B:
+				refresh(cur_stateL, cur_stateR)
+		elif next_stateR == M1B:
 			for x in range (M1S, M1B, -1):
 				cur_stateR = x
-				refresh()
-		  # then itterate to the desired state
-		elif cur_stateL == M2F:
+				refresh(cur_stateL, cur_stateR)
+
+
+	if (cur_stateL != next_stateL):
+		#first set to 64
+		cur_stateL = M2S
+		refresh(cur_stateL, cur_stateR)
+		time.sleep(1)
+	  # then itterate to the desired stat
+		if next_stateL == M2F:
 			for x in range (M2S, M2F):
 				cur_stateL = x
-				refresh()
-		elif cur_stateR == M2B:
+				refresh(cur_stateL, cur_stateR)
+		elif next_stateL == M2B:
 			for x in range (M2S, M2B, -1):
 				cur_stateL = x
-				refresh()
-	refresh()
+				refresh(cur_stateL, cur_stateR)
+	refresh(cur_stateL, cur_stateR)
+	#print 'to save:'
+	#print cur_stateR
+	#print cur_stateL	
+	save_cur_state(cur_stateL, cur_stateR)
 
-def refresh():
-	serialPort.write(chr(cur_stateR))
-	serialPort.write(chr(cur_stateL))
-	print cur_stateR
-	print cur_stateL
+def refresh(cur_stateR, cur_stateL):
+	#serialPort.write(chr(cur_stateR))
+	#serialPort.write(chr(cur_stateL))
+	#print cur_stateR
+	#print cur_stateL
+
+def save_cur_state(cur_stateR, cur_stateL):
+	global cur_stateR_save
+	global cur_stateL_save
+	cur_stateR_save = cur_stateR
+	cur_stateL_save	= cur_stateL
+	#print cur_stateL_save
+	#print cur_stateR_save
+
+
+def get_cur_state():
+	global cur_stateR_save
+	global cur_stateL_save
+	cur_stateR = cur_stateR_save
+	cur_stateL = cur_stateL_save
+	return(cur_stateL, cur_stateR)
 
 
 main.bind_all('<KeyPress>', kp)
+
 
 main.mainloop()
 
