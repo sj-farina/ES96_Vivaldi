@@ -29,17 +29,54 @@ class Find_Joystick:
 		events = pygame.event.get()
 		for event in events:
 			# event type for pressing any of the joystick buttons down
-			if event.type == pygame.JOYBUTTONDOWN:
+			if event.type == pygame.JOYAXISMOTION:
+				# generate the event I've defined
+				self.root.event_generate("<<JoyFoo>>")
+				#print(pygame.joystick.Joystick(0))
+			'''elif event.type == pygame.JOYHATMOTION:
 				# generate the event I've defined
 				self.root.event_generate("<<JoyFoo>>")
 				print(pygame.joystick.Joystick(0))
+			elif event.type == pygame.JOYBALLMOTION:
+				# generate the event I've defined
+				self.root.event_generate("<<JoyFoo>>")
+				print(pygame.joystick.Joystick(0))'''
+#JOYAXISMOTION JOYBALLMOTION JOYBUTTONDOWN JOYBUTTONUP JOYHATMOTION
 
 		## return to check for more events in a moment
 		self.root.after(20, self.find_events)
 
 	def my_event_callback(self, event):
-		print "Joystick button press (down) event"
-		print (event)
+		#print "Joystick button press (down) event"
+		#print (event)
+		Joy0 = pygame.joystick.Joystick(0)
+		# tell pygame to record joystick events
+		Joy0.init()
+		if Joy0.get_axis(0) != 0:
+			if Joy0.get_axis(0) == -1:
+				print 'left'
+			else:
+				print 'right'
+		elif Joy0.get_axis(1) != 0:
+			if Joy0.get_axis(1) == -1:
+				print 'up'
+			else:
+				print 'down'
+		else:
+			print 'stop'
+		
+
+		#if Joy0.get_axis(0) == -1:
+		#	print 'left'
+		#if ((Joy0.get_axis(0) != 0) or (Joy0.get_axis(0) != -1)):
+		#	print 'right'
+		#if Joy0.get_axis(1) == -1:
+		#	print 'up'
+		#if ((Joy0.get_axis(1) != 0) or (Joy0.get_axis(1) != -1)):
+		#	print 'down'
+
+		#print Joy0.get_axis(0)
+		#print Joy0.get_axis(1)
 
 	## quit out of everything
 	def quit(self):
