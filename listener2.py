@@ -34,6 +34,7 @@ def off():
 	#GPIO.output(11,GPIO.LOW)
 
 def on(pin):
+	print pin
 	pi1.write(pin, 1)
 	#GPIO.setmode(GPIO.BOARD)
 	#GPIO.setup(pin, GPIO.OUT)
