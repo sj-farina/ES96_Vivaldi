@@ -1,8 +1,9 @@
 from Tkinter import *
 import time
 from serial import Serial
-from std_msgs.msg import Int64
 import rospy
+from std_msgs.msg import Int64
+
 
 #Defines
 M1B = 1
@@ -32,18 +33,19 @@ def callback(data):
 	# GPIO expects an int, which is notthe same as Int64,
 	# still need to figure out how to convert betweent he two >_<
 	# This is a super messy workaround...
-	try:
-		cur_stateR
-		cur_stateL
+  try:
+    cur_stateR
+    cur_stateL
+    cur_stateL_save
+    cur_stateR_save
+  except (ValueError, NameError):
+    print'error'
+    save_cur_state(0,0)
 
-	except (ValueError, NameError):
-		cur_stateR = 0
-		cur_stateL = 0
-		save_cur_state(0,0)
-	stuff = str(data)
-	tag, value = str.split(stuff)
-	input_int = int(value)
-	direction_set(input_int)
+  stuff = str(data)
+  tag, value = str.split(stuff)
+  input_int = int(value)
+  direction_set(input_int)
 
 
 '''def kp(event):
@@ -84,7 +86,7 @@ def direction_set(direction):
 def update(next_stateR, next_stateL):
 	cur_stateR, cur_stateL = get_cur_state()
 	if (cur_stateR != next_stateR):
-		#first set to 64 
+		#first set to 64
 		cur_stateR = M1S
 		refresh(cur_stateL, cur_stateR)
 		time.sleep(.01)
@@ -122,7 +124,7 @@ def update(next_stateR, next_stateL):
 				refresh(cur_stateL, cur_stateR)'''
 	#print 'to save:'
 	#print cur_stateR
-	#print cur_stateL	
+	#print cur_stateL
 	save_cur_state(cur_stateL, cur_stateR)
 
 def refresh(cur_stateR, cur_stateL):
@@ -136,6 +138,8 @@ def save_cur_state(cur_stateR, cur_stateL):
 	global cur_stateL_save
 	cur_stateR_save = cur_stateR
 	cur_stateL_save	= cur_stateL
+
+
 	#print cur_stateL_save
 	#print cur_stateR_save
 
@@ -145,21 +149,21 @@ def get_cur_state():
 	global cur_stateL_save
 	cur_stateR = cur_stateR_save
 	cur_stateL = cur_stateL_save
+
+
 	return(cur_stateL, cur_stateR)
 
 
 def listener():
 
     rospy.init_node('listener', anonymous=True)
-
     rospy.Subscriber("chatter", Int64, callback)
-
     rospy.spin()
 
 if __name__ == '__main__':
     listener()
 
-#this should need to be in the talker code, not this. 
+#this should need to be in the talker code, not this.
 #main.bind_all('<KeyPress>', listener)
 
 
