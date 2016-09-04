@@ -1,9 +1,8 @@
+import rospy
+from std_msgs.msg import Int64
 from Tkinter import *
 import time
 from serial import Serial
-import rospy
-from std_msgs.msg import Int64
-
 
 #Defines
 M1B = 1
@@ -26,43 +25,27 @@ cur_stateL = M2S
 next_stateR = M1S
 next_state = M2S
 
-#main = Tk()
 
 
-def callback(data):
-	# GPIO expects an int, which is notthe same as Int64,
-	# still need to figure out how to convert betweent he two >_<
-	# This is a super messy workaround...
-  try:
-    cur_stateR
-    cur_stateL
-    cur_stateL_save
-    cur_stateR_save
-  except (ValueError, NameError):
-    print'error'
-    save_cur_state(0,0)
-
-  stuff = str(data)
-  tag, value = str.split(stuff)
-  input_int = int(value)
-  direction_set(input_int)
-
-
-'''def kp(event):
-	if event.keysym == 'Up' :
-		direction_set(F)
-	elif event.keysym =='Down' :
-		direction_set(B)
-	elif event.keysym =='Left' :
-		direction_set(L)
-	elif event.keysym =='Right' :
-		direction_set(R)
+def kp(event):
+	print event
+	if event == 'w' :
+		serialPort.write(chr(127))
+		serialPort.wirte(chr(255))
+	elif event =='s' :
+		serialPort.write(chr(1))
+		serialPort.write(chr(128))
+	elif event =='a' :
+		serialPort.wirte(chr(128))
+		serialPort.write(chr(127))
+	elif event =='d' :
+		serialPort.write(chr(1))
+		serialPort.write(chr(255))
 	else :
-		save_cur_state(0, 0)
-		direction_set(S)'''
+		serialPort.write(chr(64))
+		serialPort.write(chr(192))
 
-
-def direction_set(direction):
+'''def direction_set(direction):
 	if direction == F:
 		next_stateR = M1F
 		next_stateL = M2F
@@ -83,10 +66,10 @@ def direction_set(direction):
 		next_stateL = M2S
 	update(next_stateR, next_stateL)
 
-def update(next_stateR, next_stateL):
+'''def update(next_stateR, next_stateL):
 	cur_stateR, cur_stateL = get_cur_state()
 	if (cur_stateR != next_stateR):
-		#first set to 64
+		#first set to 64 
 		cur_stateR = M1S
 		refresh(cur_stateL, cur_stateR)
 		time.sleep(.01)
@@ -103,7 +86,7 @@ def update(next_stateR, next_stateL):
 				time.sleep(.01)
 				refresh(cur_stateL, cur_stateR)'''
 
-	print cur_stateL
+	'''print cur_stateL
 	print next_stateL
 	if (cur_stateL != next_stateL):
 		#first set to 64
@@ -124,22 +107,20 @@ def update(next_stateR, next_stateL):
 				refresh(cur_stateL, cur_stateR)'''
 	#print 'to save:'
 	#print cur_stateR
-	#print cur_stateL
-	save_cur_state(cur_stateL, cur_stateR)
+	#print cur_stateL	
+	'''save_cur_state(cur_stateL, cur_stateR)
 
 def refresh(cur_stateR, cur_stateL):
 	serialPort.write(chr(cur_stateR))
 	serialPort.write(chr(cur_stateL))
-	print cur_stateR
-	print cur_stateL
+	#print cur_stateR
+	#print cur_stateL
 
 def save_cur_state(cur_stateR, cur_stateL):
 	global cur_stateR_save
 	global cur_stateL_save
 	cur_stateR_save = cur_stateR
 	cur_stateL_save	= cur_stateL
-
-
 	#print cur_stateL_save
 	#print cur_stateR_save
 
@@ -149,25 +130,10 @@ def get_cur_state():
 	global cur_stateL_save
 	cur_stateR = cur_stateR_save
 	cur_stateL = cur_stateL_save
+	return(cur_stateL, cur_stateR)'''
 
 
-	return(cur_stateL, cur_stateR)
-
-
-def listener():
-
-    rospy.init_node('listener', anonymous=True)
-    rospy.Subscriber("chatter", Int64, callback)
-    rospy.spin()
-
-if __name__ == '__main__':
-    listener()
-
-#this should need to be in the talker code, not this.
-#main.bind_all('<KeyPress>', listener)
-
-
-main.mainloop()
-
-serialPort.close()
-
+while(1):
+	datain = raw_input()
+	kp(datain)
+	
