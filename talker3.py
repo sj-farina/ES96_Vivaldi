@@ -30,7 +30,6 @@ def kp(event):
 	elif event.keysym =='Right' :
 		talker(R)
 	else :
-
 		talker(S)
 #def kr(event) :
 #	talker(0)

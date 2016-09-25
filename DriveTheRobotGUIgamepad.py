@@ -21,10 +21,72 @@ Stop = 0
 Front = 1
 Back = 2
 Left = 3
-Right = 4
+Rright = 4
 
 # keep track of widgets for event handlers
 widget_track = {}
+
+
+
+
+class Find_Joystick:
+	def __init__(self, root):
+		self.root = root
+
+		## initialize pygame and joystick
+		pygame.init()
+		if(pygame.joystick.get_count() < 1):
+			# no joysticks found
+			print "Please connect a joystick.\n"
+			self.quit()
+		else:
+			# create a new joystick object from
+			# ---the first joystick in the list of joysticks
+			Joy0 = pygame.joystick.Joystick(0)
+			# tell pygame to record joystick events
+			Joy0.init()
+
+		## bind the event I'm defining to a callback function
+		self.root.bind("<<JoyFoo>>", self.my_event_callback)
+
+		## start looking for events
+		self.root.after(0, self.find_events)
+
+	def find_events(self):
+		## check everything in the queue of pygame events
+		events = pygame.event.get()
+		for event in events:
+			# event type for pressing any of the joystick buttons down
+			if event.type == pygame.JOYAXISMOTION:
+				# generate the event I've defined
+				self.root.event_generate("<<JoyFoo>>")
+		## return to check for more events in a moment
+		self.root.after(100, self.find_events)
+
+	def my_event_callback(self, event):
+		Joy0 = pygame.joystick.Joystick(0)
+		# tell pygame to record joystick events
+		Joy0.init()
+		if Joy0.get_axis(0) != 0:
+			if Joy0.get_axis(0) == -1:
+				print 'left'
+			else:
+				print 'right'
+		elif Joy0.get_axis(1) != 0:
+			if Joy0.get_axis(1) == -1:
+				print 'up'
+			else:
+				print 'down'
+		else:
+			print 'stop'
+
+  ## quit out of everything
+	def quit(self):
+		import sys
+		sys.exit()
+
+
+
 
 # event handler creates connect thread
 def connect_evt():
@@ -61,9 +123,6 @@ def run():
   #return
   #stdin, stdout, stderr = ssh.exec_command('python ES96_Vivaldi/talker2.py')
 
-
-
-
 def talker(data):
     pub = rospy.Publisher('chatter', Int64, queue_size=10)
     rospy.init_node('talker', anonymous=True)
@@ -75,19 +134,14 @@ def talker(data):
 def kp(event):
 	if event.keysym == 'Up' :
 		talker(Front)
-		print 'front'
 	elif event.keysym =='Down' :
 		talker(Back)
-		print 'back'
 	elif event.keysym =='Left' :
 		talker(Left)
-		print 'left'
 	elif event.keysym =='Right' :
 		talker(Right)
-		print 'right'
 	else :
 		talker(Stop)
-		print 'stoped'
 
 root = Tk()
 
@@ -110,6 +164,5 @@ ttk.Label(mainframe, text="Click 'Connect' to establish link.").grid(column=1, r
 ttk.Label(mainframe, text="Click 'Run' to control using the arrow keys").grid(column=1, row=2, sticky=W)
 
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
-
 
 root.mainloop()
