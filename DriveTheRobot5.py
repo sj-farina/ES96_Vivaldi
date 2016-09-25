@@ -1,3 +1,9 @@
+# DriveTheRobot5.py
+# Janey Farina, Alex Raun
+# To be run with DriveTheRobotGUI.py
+
+#This program contorls the motors via the Roboclaw Driver
+
 from Tkinter import *
 import time
 from serial import Serial
@@ -18,20 +24,16 @@ B = 2
 L = 3
 R = 4
 
-
+# open the serial port and define initial values to be motors off
 serialPort = Serial('/dev/ttyAMA0', 9600, timeout = 2)
 cur_stateR = M1S
 cur_stateL = M2S
 next_stateR = M1S
 next_state = M2S
 
-#main = Tk()
-
 
 def callback(data):
-	# GPIO expects an int, which is notthe same as Int64,
-	# still need to figure out how to convert betweent he two >_<
-	# This is a super messy workaround...
+	# if the values have not been initialized, fix that
 	try:
 		cur_stateR
 		cur_stateL
@@ -40,26 +42,13 @@ def callback(data):
 		cur_stateR = 0
 		cur_stateL = 0
 		save_cur_state(0,0)
-	stuff = str(data)
-	tag, value = str.split(stuff)
+	# changing the Int64 to an int
+	dataIn = str(data)
+	tag, value = str.split(dataIn)
 	input_int = int(value)
 	direction_set(input_int)
 
-
-'''def kp(event):
-	if event.keysym == 'Up' :
-		direction_set(F)
-	elif event.keysym =='Down' :
-		direction_set(B)
-	elif event.keysym =='Left' :
-		direction_set(L)
-	elif event.keysym =='Right' :
-		direction_set(R)
-	else :
-		save_cur_state(0, 0)
-		direction_set(S)'''
-
-
+# processes front back left right into motor directions
 def direction_set(direction):
 	if direction == F:
 		next_stateR = M1F
@@ -81,6 +70,7 @@ def direction_set(direction):
 		next_stateL = M2S
 	update(next_stateR, next_stateL)
 
+# compares the states of the motors with the next state and decided if to update
 def update(next_stateR, next_stateL):
 	cur_stateR, cur_stateL = get_cur_state()
 	if (cur_stateR != next_stateR):
@@ -89,17 +79,7 @@ def update(next_stateR, next_stateL):
 		refresh(cur_stateL, cur_stateR)
 		time.sleep(.01)
 		cur_stateR = next_stateR
-	  	# then itterate to the desired stat
-		'''if next_stateR == M1F:
-			for x in range (M1S, M1F):
-				cur_stateR = x
-				time.sleep(.01)
-				refresh(cur_stateL, cur_stateR)
-		elif next_stateR == M1B:
-			for x in range (M1S, M1B, -1):
-				cur_stateR = x
-				time.sleep(.01)
-				refresh(cur_stateL, cur_stateR)'''
+
 
 	print cur_stateL
 	print next_stateL
@@ -109,28 +89,20 @@ def update(next_stateR, next_stateL):
 		refresh(cur_stateL, cur_stateR)
 		time.sleep(.01)
 		cur_stateL = next_stateL
-	  	# then itterate to the desired stat
-		'''if next_stateL == M2F:
-			for x in range (M2S, M2F):
-				cur_stateL = x
-				time.sleep(.01)
-				refresh(cur_stateL, cur_stateR)
-		elif next_stateL == M2B:
-			for x in range (M2S, M2B, -1):
-				cur_stateL = x
-				time.sleep(.01)
-				refresh(cur_stateL, cur_stateR)'''
+
 	#print 'to save:'
 	#print cur_stateR
 	#print cur_stateL	
 	save_cur_state(cur_stateL, cur_stateR)
 
+# writes values to serial out
 def refresh(cur_stateR, cur_stateL):
 	serialPort.write(chr(cur_stateR))
 	serialPort.write(chr(cur_stateL))
 	print cur_stateR
 	print cur_stateL
 
+# saving the current state of the motors for comparison 
 def save_cur_state(cur_stateR, cur_stateL):
 	global cur_stateR_save
 	global cur_stateL_save
@@ -139,7 +111,7 @@ def save_cur_state(cur_stateR, cur_stateL):
 	#print cur_stateL_save
 	#print cur_stateR_save
 
-
+# returns current state for comparison
 def get_cur_state():
 	global cur_stateR_save
 	global cur_stateL_save
@@ -147,13 +119,10 @@ def get_cur_state():
 	cur_stateL = cur_stateL_save
 	return(cur_stateL, cur_stateR)
 
-
+#listener over roscore
 def listener():
-
     rospy.init_node('listener', anonymous=True)
-
     rospy.Subscriber("chatter", Int64, callback)
-
     rospy.spin()
 
 if __name__ == '__main__':

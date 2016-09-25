@@ -1,8 +1,18 @@
-#python 3
+# tkinterTest3.py
+# Janey Farina, Alex Raun
+# To be run with listener2.py or DriveTheRobot5.py
+
+#This program creates a front end Graphical User Interface
+#pressing connect sets up the connection with the Pi
+#pressing run allows keypresses to be capturesd and transmitted
+
+
+
+#uncomment for python 3
 #from tkinter import *
 #from tkinter import ttk
 
-#python 2
+#uncomment for python 2
 from Tkinter import *
 import ttk
 
@@ -24,9 +34,8 @@ def connect_evt():
     t.start()
     widget_track['connect'].config(text="Connected", state="disabled", command=None)
 
+#connects to Pi over ssh, logs in, starts roscore and starts listening program
 def connect():
-  time.sleep(5)   # todo: temporary for test
-  return
   ssh = paramiko.SSHClient()
   ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
   ssh.connect('192.168.1.2', username='pi', password='raspberry')
@@ -45,15 +54,11 @@ def run_evt():
     t.start()
     widget_track['run'].config(text="Running", state="disabled", command=None)
 
+# on clicking run, start listening for keypresses
 def run():
   root.bind_all('<KeyPress>', kp)
-  print ('foooo')
-  #time.sleep(5)     # todo: temporary for test
-  #return
-  #stdin, stdout, stderr = ssh.exec_command('python ES96_Vivaldi/talker2.py')
 
-
-
+# send keypresses to listener 
 def talker(data):
     pub = rospy.Publisher('chatter', Int64, queue_size=10)
     rospy.init_node('talker', anonymous=True)
@@ -62,6 +67,7 @@ def talker(data):
     pub.publish(data)
     rate.sleep()
 
+# listen for and process key presses
 def kp(event):
 	if event.keysym == 'Right' :
 		talker(18)
@@ -72,6 +78,7 @@ def kp(event):
 
 root = Tk()
 
+# setting up the GUI window
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
